@@ -1,25 +1,23 @@
 import Phaser from 'phaser'
+import Player from '../entities/Player'
 
 export default class GameScene extends Phaser.Scene {
   constructor(config) {
     super('GameScene', config)
 
-    this.player = null
+    
   }
-
   
   create() {
     const map = this.createMap()
     const layers = this.createLayers(map)
-    this.createPlayer()
+    const player = this.createPlayer()
 
-    this.physics.add.collider(this.player, layers.platfromCollision)
+    this.physics.add.collider(player, layers.platfromCollision)
   }
 
   createPlayer() {
-    this.player = this.physics.add.sprite(100, 250, 'player')
-      .setOrigin(0)
-      .setCollideWorldBounds(true)
+    return new Player(this, 100, 250)
   }
 
   createMap() {
