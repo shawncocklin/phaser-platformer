@@ -10,7 +10,10 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     scene.physics.add.existing(this)
 
     this.playerSpeed = 200
-    this.playerGrav = 500
+    this.playerGrav = 800
+    this.jumpForce = -400
+    this.jumpCount = 0
+    this.maxJumps = 1
     // creates hotkeys for up, down, left, right, shift, and space
     this.playerInput = this.scene.input.keyboard.createCursorKeys() 
 
@@ -31,7 +34,26 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
 
   update() {
     this.movePlayer()
+    this.playerJump()
     
+  }
+
+  playerJump() {
+    const {space} = this.playerInput
+    const spaceDown = Phaser.Input.Keyboard.JustDown(space)
+    const onFloor = this.body.onFloor()
+
+    if(spaceDown && (onFloor || this.jumpCount < this.maxJumps)) {
+      this.setVelocityY(this.jumpForce)
+      this.jumpCount++
+    }
+    
+    if(onFloor) {
+      this.jumpCount = 0
+    }
+    if(this.body.velocity.y !== 0) {
+      this.play('jump', true)
+    }
   }
 
   movePlayer() {

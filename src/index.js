@@ -3,7 +3,7 @@ import GameScene from './scenes/GameScene'
 import Preload from './scenes/Preload'
 
 
-const useDebugger = true
+const useDebugger = false
 const WIDTH = 1280
 const HEIGHT = 600
 
