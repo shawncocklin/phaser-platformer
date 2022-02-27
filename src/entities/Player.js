@@ -1,5 +1,6 @@
 import Phaser from 'phaser'
 import animations from './playerAnimations'
+import collidable from '../mixins/collidable'
 
 
 export default class Player extends Phaser.Physics.Arcade.Sprite {
@@ -8,6 +9,9 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
 
     scene.add.existing(this)
     scene.physics.add.existing(this)
+
+    // pulls all values from the source object and adds them to 'this' context
+    Object.assign(this, collidable)
 
     this.playerSpeed = 200
     this.playerGrav = 800
@@ -37,6 +41,8 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     this.playerJump()
     
   }
+
+  
 
   playerJump() {
     const {space} = this.playerInput

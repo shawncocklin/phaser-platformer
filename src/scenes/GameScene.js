@@ -5,7 +5,7 @@ export default class GameScene extends Phaser.Scene {
   constructor(config) {
     super('GameScene', config)
 
-    
+    this.config = config
   }
   
   create() {
@@ -13,11 +13,29 @@ export default class GameScene extends Phaser.Scene {
     const layers = this.createLayers(map)
     const player = this.createPlayer()
 
-    this.physics.add.collider(player, layers.platfromCollision)
+    this.createPlayerColliders(player, {
+      colliders: {
+        platformCollision: layers.platformCollision
+      }
+    })
+
+    this.setupFollowCamera(player)
+
+  }
+
+  setupFollowCamera(target) {
+    const { width, height, mapOffset, camZoom } = this.config
+    this.physics.world.setBounds(0,0, width + mapOffset, height + 200)
+    this.cameras.main.setBounds(0,0, width + mapOffset, height).setZoom(camZoom)
+    this.cameras.main.startFollow(target)
   }
 
   createPlayer() {
     return new Player(this, 100, 250)
+  }
+
+  createPlayerColliders(player, {colliders}) {
+    player.addCollider(colliders.platformCollision)
   }
 
   createMap() {
@@ -29,11 +47,11 @@ export default class GameScene extends Phaser.Scene {
   createLayers(map) {
     // order in the code will affect the rendering order
     const tileset = map.getTileset('main_lev_build_1')
-    const platfromCollision = map.createLayer('platfromCollision', tileset)
+    const platformCollision = map.createLayer('platformCollision', tileset)
     const platformLayer = map.createLayer('platforms', tileset)
     const envLayer = map.createLayer('environment', tileset)
 
-    platfromCollision.setCollisionByProperty({collides: true})
-    return {envLayer, platformLayer, platfromCollision}
+    platformCollision.setCollisionByProperty({collides: true})
+    return {envLayer, platformLayer, platformCollision}
   }
 }

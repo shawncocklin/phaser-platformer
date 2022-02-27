@@ -4,12 +4,18 @@ import Preload from './scenes/Preload'
 
 
 const useDebugger = false
-const WIDTH = 1280
+
+const MAP_WIDTH = 1600
+const WIDTH = document.body.offsetWidth
 const HEIGHT = 600
+const CAM_ZOOM = 1.5
 
 const SHARED_CONFIG = {
+  // accounts for portion of map that is outside of the rendered space of the canvas
+  mapOffset: MAP_WIDTH > WIDTH ? MAP_WIDTH - WIDTH : 0,
   width: WIDTH,
   height: HEIGHT,
+  camZoom: CAM_ZOOM,
 }
 
 const Scenes = [Preload, GameScene]
