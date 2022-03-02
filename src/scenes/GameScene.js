@@ -1,5 +1,6 @@
 import Phaser from 'phaser'
 import Player from '../entities/Player'
+import EnemiesGroup from '../groups/EnemiesGroup'
 
 export default class GameScene extends Phaser.Scene {
   constructor(config) {
@@ -13,11 +14,19 @@ export default class GameScene extends Phaser.Scene {
     const layers = this.createLayers(map)
     const playerZones = this.getPlayerZones(layers.playerZones)
     const player = this.createPlayer(playerZones.start)
+    const enemies = this.createEnemies(layers.enemySpawnPoints)
 
-
+    // player colliders
     this.createPlayerColliders(player, {
       colliders: {
         platformCollision: layers.platformCollision
+      }
+    })
+    // birdman enemy colliders
+    this.createEnemyColliders(enemies, {
+      colliders: {
+        platformCollision: layers.platformCollision,
+        player: player,
       }
     })
 
@@ -26,11 +35,25 @@ export default class GameScene extends Phaser.Scene {
 
   }
 
-  setupFollowCamera(target) {
-    const { width, height, mapOffset, camZoom } = this.config
-    this.physics.world.setBounds(0,0, width + mapOffset, height + 200)
-    this.cameras.main.setBounds(0,0, width + mapOffset, height).setZoom(camZoom)
-    this.cameras.main.startFollow(target)
+  // map related methods
+
+  createMap() {
+    const map = this.make.tilemap({key: 'crystal-map'})
+    map.addTilesetImage('main_lev_build_1', 'tileset1')
+    return map
+  }
+
+  createLayers(map) {
+    // order in the code will affect the rendering order
+    const tileset = map.getTileset('main_lev_build_1')
+    const platformCollision = map.createLayer('platformCollision', tileset)
+    const platformLayer = map.createLayer('platforms', tileset)
+    const envLayer = map.createLayer('environment', tileset)
+    const playerZones = map.getObjectLayer('player_zones')
+    const enemySpawnPoints = map.getObjectLayer('enemy_spawns')
+
+    platformCollision.setCollisionByProperty({collides: true})
+    return {envLayer, platformLayer, platformCollision, playerZones, enemySpawnPoints}
   }
 
   getPlayerZones(playerZonesLayer) {
@@ -57,6 +80,8 @@ export default class GameScene extends Phaser.Scene {
       
   }
 
+  // Player related methods
+
   createPlayer(start) {
     return new Player(this, start.x, start.y)
   }
@@ -65,21 +90,28 @@ export default class GameScene extends Phaser.Scene {
     player.addCollider(colliders.platformCollision)
   }
 
-  createMap() {
-    const map = this.make.tilemap({key: 'crystal-map'})
-    map.addTilesetImage('main_lev_build_1', 'tileset1')
-    return map
+  setupFollowCamera(target) {
+    const { width, height, mapOffset, camZoom } = this.config
+    this.physics.world.setBounds(0,0, width + mapOffset, height + 200)
+    this.cameras.main.setBounds(0,0, width + mapOffset, height).setZoom(camZoom)
+    this.cameras.main.startFollow(target)
   }
 
-  createLayers(map) {
-    // order in the code will affect the rendering order
-    const tileset = map.getTileset('main_lev_build_1')
-    const platformCollision = map.createLayer('platformCollision', tileset)
-    const platformLayer = map.createLayer('platforms', tileset)
-    const envLayer = map.createLayer('environment', tileset)
-    const playerZones = map.getObjectLayer('player_zones')
+  // enemy related methods
 
-    platformCollision.setCollisionByProperty({collides: true})
-    return {envLayer, platformLayer, platformCollision, playerZones}
+  createEnemies(spawnPoints) {
+    const enemies = new EnemiesGroup(this)
+    const enemyTypes = enemies.getTypes()
+    spawnPoints.objects.forEach(spawnPoint => {
+      const enemy = new enemyTypes[spawnPoint.type](this, spawnPoint.x, spawnPoint.y)
+      enemies.add(enemy)
+    })
+
+    return enemies
   }
+
+  createEnemyColliders(enemies, {colliders}) {
+    enemies.addCollider(colliders.platformCollision).addCollider(colliders.player)
+  }
+  
 }

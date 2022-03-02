@@ -29,6 +29,8 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
   init() {
     this.body.setGravityY(this.playerGrav)
     this.setCollideWorldBounds(true)
+    this.setSize(25, this.height)
+    this.setOffset(5, 0)
     this.setOrigin(0.5,1)
     animations(this.scene.anims)
   }
