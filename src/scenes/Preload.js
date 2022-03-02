@@ -2,6 +2,7 @@ import Phaser from 'phaser'
 import crytsalMap from '../../assets/crystalMap.json'
 import tileset1 from '../../assets/main_lev_build_1.png'
 import playerMovement from '../../assets/player/move_sprite_1.png'
+import endStar from '../../assets/star.png'
 
 
 export default class Preload extends Phaser.Scene {
@@ -19,6 +20,7 @@ export default class Preload extends Phaser.Scene {
       spacing: 32,
       frameHeight: 38,
     })
+    this.load.image('end-star', endStar)
   }
 
   create() {

@@ -3,7 +3,7 @@ import GameScene from './scenes/GameScene'
 import Preload from './scenes/Preload'
 
 
-const useDebugger = false
+const useDebugger = true
 
 const MAP_WIDTH = 1600
 const WIDTH = document.body.offsetWidth
