@@ -23,7 +23,6 @@ export default class Preload extends Phaser.Scene {
     })
     this.load.spritesheet('birdman', enemy1, {
       frameWidth: 64,
-      spacing: 32,
       frameHeight: 64,
     })
     this.load.image('end-star', endStar)

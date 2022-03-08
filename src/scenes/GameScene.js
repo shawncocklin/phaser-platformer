@@ -33,6 +33,38 @@ export default class GameScene extends Phaser.Scene {
     this.createEndGoal(playerZones.end, player)
     this.setupFollowCamera(player)
 
+    this.plotting = false
+    this.graphics = this.add.graphics()
+    this.line = new Phaser.Geom.Line()
+    this.graphics.lineStyle(1, 0x00ff00)
+    this.input.on('pointerdown', this.startDraw, this)
+    this.input.on('pointerup', pointer => this.finishDraw(pointer, layers.platformLayer), this)
+
+
+  }
+
+  startDraw(pointer) {
+    this.line.x1 = pointer.worldX
+    this.line.y1 = pointer.worldY
+    this.plotting = true
+  }
+
+  finishDraw(pointer, layer) {
+    this.line.x2 = pointer.worldX
+    this.line.y2 = pointer.worldY
+
+    this.hits = layer.getTilesWithinShape(this.line)
+    if(this.hits.length > 0) {
+      this.hits.forEach(hit => {
+        if(hit.index !== -1) {
+          console.log('ray hit the platform')
+        }
+      })
+    }
+    
+    this.graphics.clear()
+    this.graphics.strokeLineShape(this.line)
+    this.plotting = false
   }
 
   // map related methods
@@ -112,6 +144,18 @@ export default class GameScene extends Phaser.Scene {
 
   createEnemyColliders(enemies, {colliders}) {
     enemies.addCollider(colliders.platformCollision).addCollider(colliders.player)
+  }
+
+  update() {
+    
+    if(this.plotting) {
+      const pointer = this.input.activePointer
+      this.line.x2 = pointer.worldX
+      this.line.y2 = pointer.worldY
+      this.graphics.clear()
+      this.graphics.strokeLineShape(this.line)
+    }
+    
   }
   
 }

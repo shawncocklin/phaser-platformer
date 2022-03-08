@@ -21,11 +21,12 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
 
     // this must go last
     this.init(this.setSizeX, this.setSizeY, this.setOffsetX, this.setOffsetY)
+    this.initEvents()
   }
 
   init(setSizeX, setSizeY, setOffsetX, setOffsetY) {
     this.gravityValue = 400
-    this.enemySpeed = 200
+    this.enemySpeed = 40
     
     
     this.body.setGravityY(this.gravityValue)
@@ -34,6 +35,14 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
     this.setOffset(this.setOffsetX, this.setOffsetY)
     this.setOrigin(0.5,1)
     this.setImmovable(true)
+  }
+
+  initEvents() {
+    this.scene.events.on(Phaser.Scenes.Events.UPDATE, this.update, this)
+  }
+
+  update(time, delta) {
+    this.setVelocityX(this.enemySpeed)
   }
 
 }

@@ -1,4 +1,5 @@
 import Enemy from './Enemy'
+import initAnims from './enemyAnimations'
 
 
 export default class Birdman extends Enemy {
@@ -10,9 +11,13 @@ export default class Birdman extends Enemy {
     this.setOffsetX = 6
     this.setOffsetY = 20
 
+    initAnims(this.scene.anims)
     super.init(this.setSizeX, this.setSizeY, this.setOffsetX, this.setOffsetY)
   }
 
-  
+  update(time, delta) {
+    super.update(time, delta)
+    this.play('birdman-idle', true)
+  }
 
 }
