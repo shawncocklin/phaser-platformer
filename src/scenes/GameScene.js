@@ -32,21 +32,6 @@ export default class GameScene extends Phaser.Scene {
 
     this.createEndGoal(playerZones.end, player)
     this.setupFollowCamera(player)
-
-    this.plotting = false
-    this.graphics = this.add.graphics()
-    this.line = new Phaser.Geom.Line()
-    this.graphics.lineStyle(1, 0x00ff00)
-    this.input.on('pointerdown', this.startDraw, this)
-    this.input.on('pointerup', pointer => this.finishDraw(pointer, layers.platformLayer), this)
-
-
-  }
-
-  startDraw(pointer) {
-    this.line.x1 = pointer.worldX
-    this.line.y1 = pointer.worldY
-    this.plotting = true
   }
 
   finishDraw(pointer, layer) {
